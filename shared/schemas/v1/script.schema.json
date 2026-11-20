@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:liquid-briefing:schemas:v1:script",
+  "title": "Podcast Script, version 1",
+  "description": "Agent 2 output. Each spoken claim is explicitly linked to source facts, which link to immutable source articles, so Agent 3 can trace it without recomputing clusters.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "script_id",
+    "listener_profile_id",
+    "language",
+    "story_ids",
+    "segments",
+    "processing_metadata"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "run_id": { "$ref": "common.schema.json#/$defs/RunId" },
+    "script_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+    "listener_profile_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+    "language": { "$ref": "common.schema.json#/$defs/LanguageCode" },
+    "story_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^story_[A-Za-z0-9_-]{8,96}$" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["segment_id", "spoken_text", "claim_refs"],
+        "properties": {
+          "segment_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+          "spoken_text": { "type": "string", "minLength": 1, "maxLength": 4000 },
+          "claim_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["script_claim_id", "claim_text", "fact_ids", "source_article_ids", "source_permalinks"],
+              "properties": {
+                "script_claim_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+                "claim_text": { "type": "string", "minLength": 1, "maxLength": 500 },
+                "fact_ids": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^fact_[A-Za-z0-9_-]{8,96}$" },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "source_article_ids": {
+                  "type": "array",
+                  "items": { "$ref": "common.schema.json#/$defs/Identifier" },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "source_permalinks": {
+                  "type": "array",
+                  "items": { "type": "string", "format": "uri" },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "processing_metadata": { "$ref": "common.schema.json#/$defs/ProcessingMetadata" }
+  }
+}

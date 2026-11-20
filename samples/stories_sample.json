@@ -1,0 +1,46 @@
+[
+  {
+    "article_id": "art_sample_001",
+    "story_id": "story_sample_001",
+    "original_language": "en",
+    "available_languages": ["en", "de"],
+    "primary_topic": "synthetic-market-event",
+    "secondary_topics": ["markets"],
+    "primary_country": null,
+    "related_countries": null,
+    "affected_countries": null,
+    "published_at_utc": "2026-11-20T10:00:00Z",
+    "permalink": "https://example.com/synthetic-market-event",
+    "publisher": "Sample Publisher",
+    "importance": 0.72,
+    "schema_version": "1.1.0",
+    "canonical_title": "Synthetic market event moves share prices",
+    "topic_key": "synthetic-market-event",
+    "last_published_at_utc": "2026-11-20T10:05:00Z",
+    "article_ids": ["art_sample_001", "art_sample_002"],
+    "permalinks": ["https://example.com/synthetic-market-event", "https://example.com/synthetic-marktereignis"],
+    "publishers": ["Sample Publisher", "Sample Verlag"],
+    "authors": ["Sample Reporter"],
+    "languages": ["de", "en"],
+    "translation_groups": [["art_sample_001", "art_sample_002"]],
+    "independent_source_count": 2,
+    "importance_breakdown": {
+      "recency": 0.95,
+      "source_coverage": 0.4,
+      "publisher_diversity": 0.5,
+      "independent_sources": 2.0
+    },
+    "reporting_differences": [],
+    "cluster_evidence": [
+      {
+        "rule": "rule_1_translation",
+        "score": 0.91,
+        "entities": 2,
+        "numbers": 1,
+        "left": "art_sample_001",
+        "right": "art_sample_002"
+      }
+    ],
+    "selection_method": "rule_1_translation"
+  }
+]

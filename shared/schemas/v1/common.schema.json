@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:liquid-briefing:schemas:v1:common",
+  "title": "Liquid Briefing shared definitions, version 1",
+  "description": "Model-agnostic primitives shared by all Agent 1/2/3 contracts. No credential, raw article text, or provider-specific identifier belongs here.",
+  "$defs": {
+    "SchemaVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "examples": ["1.0.0"]
+    },
+    "RunId": {
+      "type": "string",
+      "pattern": "^run_[A-Za-z0-9_-]{8,64}$"
+    },
+    "LanguageCode": {
+      "type": "string",
+      "enum": ["en", "de", "nl"]
+    },
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "VerificationStatus": {
+      "type": "string",
+      "enum": ["unverified", "candidate", "review_needed", "verified", "conflicting", "rejected"],
+      "description": "LLM-produced evidence starts as 'candidate'. Only Agent 3 or a human may set 'verified'."
+    },
+    "ExtractionMethod": {
+      "type": "string",
+      "enum": ["deterministic", "embedding_cluster", "llm_structured", "hybrid", "human"],
+      "description": "Describes how the value was produced, not which vendor produced it."
+    },
+    "PipelineStage": {
+      "type": "string",
+      "enum": ["ingestion", "embedding", "clustering", "fact_extraction", "ranking", "story_export", "personalization", "script_generation", "critic", "audio"]
+    },
+    "WarningCode": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{2,48}$",
+      "examples": ["RETRY_LIMIT", "RATE_LIMITED", "MISSING_PERMALINK", "CONFLICTING_VALUES"]
+    },
+    "TokenUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_tokens", "output_tokens", "requests"],
+      "properties": {
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 },
+        "cached_input_tokens": { "type": "integer", "minimum": 0, "default": 0 },
+        "reasoning_tokens": { "type": "integer", "minimum": 0, "default": 0 },
+        "requests": { "type": "integer", "minimum": 0 },
+        "retries": { "type": "integer", "minimum": 0, "default": 0 }
+      }
+    },
+    "ProcessingMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "created_at",
+        "producer",
+        "producer_version",
+        "pipeline_stage",
+        "embedding_model",
+        "llm_model",
+        "extraction_method",
+        "token_usage",
+        "estimated_cost_usd",
+        "cost_basis",
+        "verification_status",
+        "dry_run",
+        "budget_limit_usd"
+      ],
+      "properties": {
+        "run_id": { "$ref": "#/$defs/RunId" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "producer": { "type": "string", "minLength": 1, "maxLength": 64, "examples": ["agent1-news-intelligence"] },
+        "producer_version": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "pipeline_stage": { "$ref": "#/$defs/PipelineStage" },
+        "embedding_model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Configured embedding model identifier, or 'none' when no embedding was used. Never a credential."
+        },
+        "llm_model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Configured text model identifier, or 'none' when no text model was used."
+        },
+        "extraction_method": { "$ref": "#/$defs/ExtractionMethod" },
+        "token_usage": { "$ref": "#/$defs/TokenUsage" },
+        "estimated_cost_usd": { "type": "number", "minimum": 0, "multipleOf": 0.000001 },
+        "cost_basis": {
+          "type": "string",
+          "enum": ["standard", "batch", "flex", "local_only", "estimate"],
+          "description": "Pricing mode used for the estimate. Reconcile against the provider bill."
+        },
+        "verification_status": { "$ref": "#/$defs/VerificationStatus" },
+        "dry_run": { "type": "boolean" },
+        "budget_limit_usd": { "type": "number", "minimum": 0 },
+        "source_hash": { "$ref": "#/$defs/Sha256" },
+        "warning_codes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/WarningCode" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "SourceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Immutable pointer to a licensed source article. Contains no article body text.",
+      "required": ["article_id", "permalink", "publication", "published_at", "language", "source_feed", "content_hash"],
+      "properties": {
+        "article_id": { "$ref": "#/$defs/Identifier" },
+        "permalink": { "type": "string", "format": "uri", "minLength": 1 },
+        "publication": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "published_at": { "type": "string", "format": "date-time" },
+        "language": { "$ref": "#/$defs/LanguageCode" },
+        "source_feed": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "content_hash": {
+          "$ref": "#/$defs/Sha256",
+          "description": "SHA-256 of the normalized headline + excerpt used as embedding input."
+        }
+      }
+    },
+    "EvidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["article_id", "permalink", "locator"],
+      "properties": {
+        "article_id": { "$ref": "#/$defs/Identifier" },
+        "permalink": { "type": "string", "format": "uri" },
+        "locator": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Stable in-source location, e.g. 'headline', 'excerpt', or 'paragraph:3'. Never a raw text body.",
+          "examples": ["headline", "excerpt", "paragraph:3"]
+        },
+        "short_quote": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Optional short quotation permitted by the dataset licence. Never a full paragraph."
+        }
+      }
+    },
+    "UncertaintyCode": {
+      "type": "string",
+      "enum": [
+        "MISSING_VALUE",
+        "CONFLICTING_SOURCES",
+        "AMBIGUOUS_UNIT",
+        "AMBIGUOUS_CURRENCY",
+        "LOW_MODEL_CONFIDENCE",
+        "TRANSLATION_RISK",
+        "DATE_PRECISION",
+        "MODEL_CANDIDATE"
+      ]
+    }
+  }
+}

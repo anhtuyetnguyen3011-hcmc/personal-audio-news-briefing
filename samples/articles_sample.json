@@ -1,0 +1,31 @@
+[
+  {
+    "article_id": "art_sample_001",
+    "story_id": "story_sample_001",
+    "original_language": "en",
+    "available_languages": ["en", "de"],
+    "primary_topic": "synthetic-market-event",
+    "secondary_topics": ["markets"],
+    "primary_country": null,
+    "related_countries": null,
+    "affected_countries": null,
+    "published_at_utc": "2026-11-20T10:00:00Z",
+    "permalink": "https://example.com/synthetic-market-event",
+    "publisher": "Sample Publisher",
+    "importance": null,
+    "schema_version": "1.1.0",
+    "$id": "SAMPLE-001",
+    "author": "Sample Reporter",
+    "title": "Synthetic market event moves share prices",
+    "excerpt": "Synthetic excerpt used only to demonstrate the normalized article contract.",
+    "provider": "Sample Provider",
+    "feed_file": "invezz_en.jsonl",
+    "text_char_count": 128,
+    "text_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "received_at_utc": "2026-11-20T10:01:00Z",
+    "categories": ["markets"],
+    "company_tickers": ["SMPL"],
+    "quality_flags": [],
+    "window_status": "included"
+  }
+]

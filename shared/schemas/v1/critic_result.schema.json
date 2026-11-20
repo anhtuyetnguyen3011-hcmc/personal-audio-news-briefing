@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:liquid-briefing:schemas:v1:critic-result",
+  "title": "Critic Result, version 1",
+  "description": "Agent 3 output. Records factual verification, source traceability, personalization fit and audio checks. Never modifies source facts in place.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "critic_result_id",
+    "target_type",
+    "target_id",
+    "overall_status",
+    "scores",
+    "checks",
+    "requires_human_review",
+    "processing_metadata"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "run_id": { "$ref": "common.schema.json#/$defs/RunId" },
+    "critic_result_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+    "target_type": { "type": "string", "enum": ["story", "script", "audio", "evidence"] },
+    "target_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+    "listener_profile_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+    "overall_status": { "type": "string", "enum": ["pass", "pass_with_warnings", "fail"] },
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["factual_accuracy", "source_traceability", "personalization_fit"],
+      "properties": {
+        "factual_accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source_traceability": { "type": "number", "minimum": 0, "maximum": 1 },
+        "personalization_fit": { "type": "number", "minimum": 0, "maximum": 1 },
+        "audio_quality": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check_id", "check_type", "status", "message_code"],
+        "properties": {
+          "check_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+          "check_type": {
+            "type": "string",
+            "enum": [
+              "claim_evidence",
+              "number_match",
+              "source_permalink",
+              "language_match",
+              "topic_fit",
+              "importance_fit",
+              "audio_length",
+              "no_raw_article_text",
+              "credential_leak"
+            ]
+          },
+          "status": { "type": "string", "enum": ["pass", "warn", "fail"] },
+          "script_claim_id": { "$ref": "common.schema.json#/$defs/Identifier" },
+          "fact_id": { "type": "string", "pattern": "^fact_[A-Za-z0-9_-]{8,96}$" },
+          "story_id": { "type": "string", "pattern": "^story_[A-Za-z0-9_-]{8,96}$" },
+          "evidence_ref": { "$ref": "common.schema.json#/$defs/EvidenceRef" },
+          "message_code": { "$ref": "common.schema.json#/$defs/WarningCode" },
+          "expected": { "type": "string", "maxLength": 120, "description": "Short expected value; never raw licensed text." },
+          "observed": { "type": "string", "maxLength": 120, "description": "Short observed value; never raw licensed text." }
+        }
+      }
+    },
+    "unresolved_claim_ids": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/Identifier" },
+      "uniqueItems": true
+    },
+    "flagged_fact_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^fact_[A-Za-z0-9_-]{8,96}$" },
+      "uniqueItems": true
+    },
+    "requires_human_review": { "type": "boolean" },
+    "review_reason_codes": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/WarningCode" },
+      "uniqueItems": true
+    },
+    "processing_metadata": { "$ref": "common.schema.json#/$defs/ProcessingMetadata" }
+  }
+}

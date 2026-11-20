@@ -1,0 +1,376 @@
+{
+  "handoff_version": "1.0.0",
+  "generated_from": {
+    "agent": "agent1",
+    "pipeline_stages": [
+      "S0",
+      "S1",
+      "S2"
+    ],
+    "pipeline_schema_version": "1.1.0",
+    "source_files": [
+      "samples/articles_sample.json",
+      "samples/stories_sample.json",
+      "samples/facts_sample.json"
+    ]
+  },
+  "selection": {
+    "stories": 3,
+    "facts": 9,
+    "excluded_verification_status": [
+      "review_needed"
+    ],
+    "excluded_nonempty_review_reasons": true,
+    "licensed_text_fields_omitted": [
+      "claim_text",
+      "source_span",
+      "figures[].context"
+    ]
+  },
+  "stories": [
+    {
+      "story_id": "story_1111111111111111",
+      "topic_key": "synthetic-market-event-alpha",
+      "importance": 0.42,
+      "published_at_utc": "2026-11-20T10:00:00Z",
+      "last_published_at_utc": "2026-11-20T10:05:00Z",
+      "article_ids": [
+        "art_a000000000000001",
+        "art_a000000000000002"
+      ],
+      "languages": [
+        "en",
+        "de"
+      ],
+      "publishers": [
+        "Synthetic Publisher A",
+        "Synthetic Publisher B"
+      ],
+      "independent_source_count": 2,
+      "selection_method": "rule_1_translation",
+      "translation_groups": [
+        [
+          "art_a000000000000001",
+          "art_a000000000000002"
+        ]
+      ],
+      "facts": [
+        {
+          "fact_id": "fact_f000000000000001",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000001",
+            "original_id": "SYNTHETIC-A-001",
+            "permalink": "https://example.com/synthetic/alpha-en",
+            "publisher": "Synthetic Publisher A",
+            "published_at_utc": "2026-11-20T10:00:00Z",
+            "language": "en",
+            "feed_file": "synthetic_feed_en.jsonl",
+            "start_char": 10,
+            "end_char": 120,
+            "source_span_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          },
+          "figures": [
+            {
+              "raw": "$10",
+              "value": 10.0,
+              "unit": null,
+              "currency": "USD"
+            }
+          ],
+          "numerical_values": [
+            "10"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        },
+        {
+          "fact_id": "fact_f000000000000002",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000001",
+            "original_id": "SYNTHETIC-A-001",
+            "permalink": "https://example.com/synthetic/alpha-en",
+            "publisher": "Synthetic Publisher A",
+            "published_at_utc": "2026-11-20T10:00:00Z",
+            "language": "en",
+            "feed_file": "synthetic_feed_en.jsonl",
+            "start_char": 121,
+            "end_char": 240,
+            "source_span_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          "figures": [
+            {
+              "raw": "10%",
+              "value": 10.0,
+              "unit": "percent",
+              "currency": null
+            }
+          ],
+          "numerical_values": [
+            "10%"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        },
+        {
+          "fact_id": "fact_f000000000000003",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000002",
+            "original_id": "SYNTHETIC-A-002",
+            "permalink": "https://example.com/synthetic/alpha-de",
+            "publisher": "Synthetic Publisher B",
+            "published_at_utc": "2026-11-20T10:05:00Z",
+            "language": "de",
+            "feed_file": "synthetic_feed_de.jsonl",
+            "start_char": 5,
+            "end_char": 130,
+            "source_span_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+          },
+          "figures": [
+            {
+              "raw": "1.000 Einheiten",
+              "value": 1000.0,
+              "unit": "Einheiten",
+              "currency": null
+            }
+          ],
+          "numerical_values": [
+            "1.000"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        }
+      ]
+    },
+    {
+      "story_id": "story_2222222222222222",
+      "topic_key": "synthetic-market-event-beta",
+      "importance": 0.51,
+      "published_at_utc": "2026-11-20T11:00:00Z",
+      "last_published_at_utc": "2026-11-20T11:07:00Z",
+      "article_ids": [
+        "art_a000000000000003"
+      ],
+      "languages": [
+        "en"
+      ],
+      "publishers": [
+        "Synthetic Publisher C"
+      ],
+      "independent_source_count": 1,
+      "selection_method": "rule_2_semantic",
+      "translation_groups": [
+        [
+          "art_a000000000000003"
+        ]
+      ],
+      "facts": [
+        {
+          "fact_id": "fact_f000000000000004",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000003",
+            "original_id": "SYNTHETIC-B-001",
+            "permalink": "https://example.com/synthetic/beta-en",
+            "publisher": "Synthetic Publisher C",
+            "published_at_utc": "2026-11-20T11:00:00Z",
+            "language": "en",
+            "feed_file": "synthetic_feed_en.jsonl",
+            "start_char": 0,
+            "end_char": 90,
+            "source_span_sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+          },
+          "figures": [
+            {
+              "raw": "£25",
+              "value": 25.0,
+              "unit": null,
+              "currency": "GBP"
+            }
+          ],
+          "numerical_values": [
+            "25"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        },
+        {
+          "fact_id": "fact_f000000000000005",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000003",
+            "original_id": "SYNTHETIC-B-001",
+            "permalink": "https://example.com/synthetic/beta-en",
+            "publisher": "Synthetic Publisher C",
+            "published_at_utc": "2026-11-20T11:00:00Z",
+            "language": "en",
+            "feed_file": "synthetic_feed_en.jsonl",
+            "start_char": 91,
+            "end_char": 180,
+            "source_span_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+          },
+          "figures": [
+            {
+              "raw": "3.5%",
+              "value": 3.5,
+              "unit": "percent",
+              "currency": null
+            }
+          ],
+          "numerical_values": [
+            "3.5%"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        },
+        {
+          "fact_id": "fact_f000000000000006",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000003",
+            "original_id": "SYNTHETIC-B-001",
+            "permalink": "https://example.com/synthetic/beta-en",
+            "publisher": "Synthetic Publisher C",
+            "published_at_utc": "2026-11-20T11:00:00Z",
+            "language": "en",
+            "feed_file": "synthetic_feed_en.jsonl",
+            "start_char": 181,
+            "end_char": 275,
+            "source_span_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          },
+          "figures": [
+            {
+              "raw": "€200 million",
+              "value": 200.0,
+              "unit": "million",
+              "currency": "EUR"
+            }
+          ],
+          "numerical_values": [
+            "200"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        }
+      ]
+    },
+    {
+      "story_id": "story_3333333333333333",
+      "topic_key": "synthetic-market-event-gamma",
+      "importance": 0.63,
+      "published_at_utc": "2026-11-20T12:00:00Z",
+      "last_published_at_utc": "2026-11-20T12:09:00Z",
+      "article_ids": [
+        "art_a000000000000004",
+        "art_a000000000000005"
+      ],
+      "languages": [
+        "en",
+        "nl"
+      ],
+      "publishers": [
+        "Synthetic Publisher D",
+        "Synthetic Publisher E"
+      ],
+      "independent_source_count": 2,
+      "selection_method": "rule_2_semantic",
+      "translation_groups": [
+        [
+          "art_a000000000000004",
+          "art_a000000000000005"
+        ]
+      ],
+      "facts": [
+        {
+          "fact_id": "fact_f000000000000007",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000004",
+            "original_id": "SYNTHETIC-C-001",
+            "permalink": "https://example.com/synthetic/gamma-en",
+            "publisher": "Synthetic Publisher D",
+            "published_at_utc": "2026-11-20T12:00:00Z",
+            "language": "en",
+            "feed_file": "synthetic_feed_en.jsonl",
+            "start_char": 12,
+            "end_char": 110,
+            "source_span_sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          },
+          "figures": [
+            {
+              "raw": "7 basis points",
+              "value": 7.0,
+              "unit": "basis points",
+              "currency": null
+            }
+          ],
+          "numerical_values": [
+            "7"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        },
+        {
+          "fact_id": "fact_f000000000000008",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000004",
+            "original_id": "SYNTHETIC-C-001",
+            "permalink": "https://example.com/synthetic/gamma-en",
+            "publisher": "Synthetic Publisher D",
+            "published_at_utc": "2026-11-20T12:00:00Z",
+            "language": "en",
+            "feed_file": "synthetic_feed_en.jsonl",
+            "start_char": 111,
+            "end_char": 205,
+            "source_span_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          },
+          "figures": [
+            {
+              "raw": "€1,250",
+              "value": 1250.0,
+              "unit": null,
+              "currency": "EUR"
+            }
+          ],
+          "numerical_values": [
+            "1,250"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        },
+        {
+          "fact_id": "fact_f000000000000009",
+          "verification_status": "candidate",
+          "source": {
+            "article_id": "art_a000000000000005",
+            "original_id": "SYNTHETIC-C-002",
+            "permalink": "https://example.com/synthetic/gamma-nl",
+            "publisher": "Synthetic Publisher E",
+            "published_at_utc": "2026-11-20T12:09:00Z",
+            "language": "nl",
+            "feed_file": "synthetic_feed_nl.jsonl",
+            "start_char": 20,
+            "end_char": 145,
+            "source_span_sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          },
+          "figures": [
+            {
+              "raw": "€12 miljoen",
+              "value": 12.0,
+              "unit": "miljoen",
+              "currency": "EUR"
+            }
+          ],
+          "numerical_values": [
+            "12"
+          ],
+          "conflicts_with": [],
+          "selection_method": "deterministic_regex"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:liquid-briefing:schemas:v1:story",
+  "title": "Story, version 1",
+  "description": "Agent 1 export unit. Source facts and source references are kept separate from AI-generated description text so Agent 2 and Agent 3 never need to re-clustering or re-fetch sources.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "story_id",
+    "topic",
+    "topic_key",
+    "primary_language",
+    "languages",
+    "article_ids",
+    "article_refs",
+    "fact_ids",
+    "importance_score",
+    "published_at_start",
+    "published_at_end",
+    "cluster_method",
+    "needs_review",
+    "generated_content",
+    "processing_metadata"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "run_id": { "$ref": "common.schema.json#/$defs/RunId" },
+    "story_id": {
+      "type": "string",
+      "pattern": "^story_[A-Za-z0-9_-]{8,96}$",
+      "description": "Stable across runs for the same event: hash of sorted source article IDs + topic key."
+    },
+    "topic": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "topic_key": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+){0,16}$",
+      "description": "Stable machine-readable topic filter used by Agent 2."
+    },
+    "primary_language": { "$ref": "common.schema.json#/$defs/LanguageCode" },
+    "languages": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/LanguageCode" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "article_ids": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/Identifier" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "article_refs": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/SourceReference" },
+      "minItems": 1,
+      "description": "Immutable source pointers; no article body text."
+    },
+    "fact_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^fact_[A-Za-z0-9_-]{8,96}$" },
+      "uniqueItems": true
+    },
+    "importance_score": { "type": "number", "minimum": 0, "maximum": 1 },
+    "importance_factors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_diversity": { "type": "number", "minimum": 0, "maximum": 1 },
+        "recency": { "type": "number", "minimum": 0, "maximum": 1 },
+        "cross_language_corroboration": { "type": "number", "minimum": 0, "maximum": 1 },
+        "numeric_density": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "published_at_start": { "type": "string", "format": "date-time" },
+    "published_at_end": { "type": "string", "format": "date-time" },
+    "cluster_method": {
+      "type": "string",
+      "enum": ["deterministic_rule", "embedding_cosine", "llm_assisted", "hybrid"]
+    },
+    "cluster_similarity": { "type": "number", "minimum": 0, "maximum": 1 },
+    "needs_review": { "type": "boolean" },
+    "generated_content": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "AI-generated storytelling surface. Never a source fact and never a copy of licensed article text.",
+      "required": ["language", "headline", "summary", "model_generated", "grounded_in_fact_ids"],
+      "properties": {
+        "language": { "$ref": "common.schema.json#/$defs/LanguageCode" },
+        "headline": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 1500 },
+        "bullets": { "type": "array", "items": { "type": "string", "maxLength": 300 }, "maxItems": 8 },
+        "model_generated": { "type": "boolean", "const": true },
+        "grounded_in_fact_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^fact_[A-Za-z0-9_-]{8,96}$" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "review_needed", "approved"],
+          "default": "draft"
+        }
+      }
+    },
+    "processing_metadata": { "$ref": "common.schema.json#/$defs/ProcessingMetadata" }
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:liquid-briefing:agent1:n8n-handoff:1.0.0",
+  "title": "Agent 1 n8n handoff projection, version 1",
+  "description": "Publishable Agent 1 S0-S2 projection for MAIN_flow_v1. Excludes licensed article text and review-needed facts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["handoff_version", "generated_from", "selection", "stories"],
+  "properties": {
+    "handoff_version": { "const": "1.0.0" },
+    "generated_from": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent", "pipeline_stages", "pipeline_schema_version", "source_files"],
+      "properties": {
+        "agent": { "const": "agent1" },
+        "pipeline_stages": {
+          "type": "array",
+          "items": { "enum": ["S0", "S1", "S2"] },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "pipeline_schema_version": { "const": "1.1.0" },
+        "source_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stories", "facts", "excluded_verification_status", "excluded_nonempty_review_reasons", "licensed_text_fields_omitted"],
+      "properties": {
+        "stories": { "type": "integer", "minimum": 3, "maximum": 5 },
+        "facts": { "type": "integer", "minimum": 3 },
+        "excluded_verification_status": {
+          "type": "array",
+          "items": { "const": "review_needed" },
+          "minItems": 1
+        },
+        "excluded_nonempty_review_reasons": { "const": true },
+        "licensed_text_fields_omitted": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "stories": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/Story" }
+    }
+  },
+  "$defs": {
+    "Story": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "story_id",
+        "topic_key",
+        "importance",
+        "published_at_utc",
+        "last_published_at_utc",
+        "article_ids",
+        "languages",
+        "publishers",
+        "independent_source_count",
+        "selection_method",
+        "translation_groups",
+        "facts"
+      ],
+      "properties": {
+        "story_id": { "type": "string", "pattern": "^story_[a-f0-9]{16}$" },
+        "topic_key": { "type": "string", "minLength": 1 },
+        "importance": { "type": "number", "minimum": 0, "maximum": 1 },
+        "published_at_utc": { "type": "string", "format": "date-time" },
+        "last_published_at_utc": { "type": "string", "format": "date-time" },
+        "article_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^art_[a-f0-9]{16}$" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "languages": {
+          "type": "array",
+          "items": { "enum": ["en", "de", "nl"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "publishers": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1
+        },
+        "independent_source_count": { "type": "integer", "minimum": 1 },
+        "selection_method": { "enum": ["rule_1_translation", "rule_2_semantic", "rule_3_cross_publisher"] },
+        "translation_groups": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^art_[a-f0-9]{16}$" },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "facts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Fact" },
+          "minItems": 3,
+          "maxItems": 5
+        }
+      }
+    },
+    "Fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fact_id",
+        "verification_status",
+        "source",
+        "figures",
+        "numerical_values",
+        "conflicts_with",
+        "selection_method"
+      ],
+      "properties": {
+        "fact_id": { "type": "string", "pattern": "^fact_[a-f0-9]{16}$" },
+        "verification_status": { "enum": ["candidate", "verified"] },
+        "source": { "$ref": "#/$defs/Source" },
+        "figures": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Figure" }
+        },
+        "numerical_values": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "conflicts_with": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "selection_method": { "enum": ["deterministic_regex", "llm_refined"] }
+      }
+    },
+    "Source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "article_id",
+        "original_id",
+        "permalink",
+        "publisher",
+        "published_at_utc",
+        "language",
+        "feed_file",
+        "start_char",
+        "end_char",
+        "source_span_sha256"
+      ],
+      "properties": {
+        "article_id": { "type": "string", "pattern": "^art_[a-f0-9]{16}$" },
+        "original_id": { "type": "string", "minLength": 1 },
+        "permalink": { "type": "string", "format": "uri" },
+        "publisher": { "type": "string", "minLength": 1 },
+        "published_at_utc": { "type": "string", "format": "date-time" },
+        "language": { "enum": ["en", "de", "nl"] },
+        "feed_file": { "type": "string", "minLength": 1 },
+        "start_char": { "type": "integer", "minimum": 0 },
+        "end_char": { "type": "integer", "minimum": 1 },
+        "source_span_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "Figure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw", "value", "unit", "currency"],
+      "properties": {
+        "raw": { "type": "string", "minLength": 1 },
+        "value": { "type": ["number", "null"] },
+        "unit": { "type": ["string", "null"] },
+        "currency": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

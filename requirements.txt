@@ -1,0 +1,4 @@
+pydantic>=2.7
+pytest>=8.0
+jsonschema>=4.23
+openai>=1.40; extra == "openai"
